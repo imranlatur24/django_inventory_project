@@ -1,0 +1,68 @@
+{% extends 'partials/base.html' %}
+{% block title %} Products {% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+{% include 'partials/topnav.html' %}
+
+<!--Table-->
+<div class="container">
+    <div class="row my-4">
+        <div class="col-md-4">
+            {% for message in messages %}
+                {% if message %}
+                    <div class="alert alert-{{message.tags}}">
+                        {{message}}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div class="border bg-white p-3">
+                <h4>Add Products</h4>
+                <hr>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{form|crispy}}
+                    <center><input type="submit" value="submit" class="btn btn-info"></center>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <table class="table bg-white">
+                <thead class="bg-info">
+                    <tr class="text-white">
+                        <th scope="col">Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Activity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.category}}</td>
+                            <td>{{ item.quantity}}</td>
+                            <td>
+                                <a class="btn btn-info btn-sm" href="{% url 'product_update' item.id %}">Edit</a>
+                                <a class="btn btn-danger" href="{% url 'product_delete' item.id %}">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<script>
+    $('.btn btn-danger"').click(function(){
+        
+        // $('#building-name').html($(this).data('name'));
+        // $('#building-description').html($(this).data('description'));
+        // $('#building-img').src($(this).data('img'));
+    });
+    </script>
+<!--End Table-->
+
+{% endblock %}

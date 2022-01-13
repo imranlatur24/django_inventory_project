@@ -1,0 +1,166 @@
+{% extends 'partials/base.html' %}
+{% block title %} dashboard {% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+{% if user.is_authenticated and user.is_staff and user.is_superuser %}
+    {% include 'partials/topnav.html' %}
+
+    <!--Graphs-->
+    <div class="container">
+        <div class="row my-5">
+            <div class="col-md-6">
+                <div class="bg-white">
+                    <canvas id="myChart1" width="400" height="300"></canvas>
+                    <script>
+                        var ctx = document.getElementById('myChart1').getContext('2d');
+                        var myChart1 = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: [{% for order in orders %} '{{ order.product.name }}', {% endfor %} ],
+                                datasets: [{
+                                    label: 'Orders',
+                                    data: [{% for order in orders %} {{ order.order_quantity }}, {% endfor %}],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(25, 159, 64, 1)',
+                                        'rgba(211, 16, 132, 1)',
+                                        'rgba(234, 162, 192, 1)',
+                                        'rgba(34, 142, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)',
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)',
+                                        'rgba(211, 16, 132, 1)',
+                                        'rgba(234, 162, 192, 1)',
+                                        'rgba(34, 142, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)',
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="bg-white">
+                    <canvas id="myChart" width="400" height="300"></canvas>
+                    <script>
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: [{% for product in products %} '{{product.name}}', {% endfor %}],
+                                datasets: [{
+                                    label: 'Products',
+                                    data: [{% for product in products %} {{ product.quantity }}, {% endfor %}],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--End Graphs-->
+{% else %}
+    <div>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Make Request
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{form|crispy}}
+                            <input class="btn btn-info btn-block" type="submit" value="Make Request">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        Orders Records
+                    </div>
+                    <div class="card-body">
+                        <table class="table bg-white">
+                            <thead class="bg-info text-white">
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                    {% if order.staff == user %}
+                                        <tr>
+                                            <td>{{order.product.name}}<td>
+                                            <td>{{order.product.category}}</td>
+                                            <td>{{order.order_quantity}}</td>
+                                            <td>{{order.date}}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

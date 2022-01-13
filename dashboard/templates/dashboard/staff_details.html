@@ -1,0 +1,57 @@
+{% extends 'partials/base.html' %}
+{% block title %} Staff {% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% include 'partials/topnav.html' %}
+
+ <!--Table-->
+ <div class="container">
+    <div class="row my-4">
+        <!-- <div class="col-md-4">
+
+        </div> -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info text-white
+                    Worker Page
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            
+                            <table class="table bg-white table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Name</th>
+                                        <td>{{ worker.username }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Email</th>
+                                        <td>{{ worker.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Phone</th>
+                                        <td>{{ worker.profilemodel.phone }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Address</th>
+                                        <td>{{ worker.profilemodel.address }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="col-md-4">
+                            <img class="img-thumbnail" src="{{ worker.profilemodel.image.url }}" alt="profile-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!--End Table-->
+{% endblock %}
